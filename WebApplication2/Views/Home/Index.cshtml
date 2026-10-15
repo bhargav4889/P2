@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Home Page";
+    var userName = Context.Session.GetString("UserName");
+    bool isLoggedIn = !string.IsNullOrEmpty(userName);
+}
+
+<div class="py-5 text-center">
+    @if (isLoggedIn)
+    {
+        <h1 class="display-5 fw-bold text-primary">Welcome, @userName!</h1>
+        <p class="lead text-muted mb-4">You are logged into the Student & Class Management Portal.</p>
+        
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Student" asp-action="Index" class="btn btn-primary btn-lg px-4">
+                Manage Students
+            </a>
+            <a asp-controller="Class" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">
+                Manage Classes
+            </a>
+        </div>
+    }
+    else
+    {
+        <h1 class="display-5 fw-bold">Student Management Portal</h1>
+        <p class="lead text-muted mb-4">Please log in to your account to view and manage students and classes.</p>
+        
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg px-4">
+                Sign In
+            </a>
+            <a asp-controller="Account" asp-action="Signup" class="btn btn-outline-success btn-lg px-4">
+                Create Account
+            </a>
+        </div>
+    }
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">🎓 Students</h5>
+                <p class="card-text text-muted">Create, update, and manage student records with class mappings.</p>
+                <a asp-controller="Student" asp-action="Index" class="btn btn-sm btn-outline-primary">Go to Students &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">🏫 Classes</h5>
+                <p class="card-text text-muted">Organize academic classes and assign students to their classes.</p>
+                <a asp-controller="Class" asp-action="Index" class="btn btn-sm btn-outline-primary">Go to Classes &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">🔐 Security & Session</h5>
+                <p class="card-text text-muted">Authentication with PBKDF2 hashed passwords and protected sessions.</p>
+                @if (isLoggedIn)
+                {
+                    <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-outline-danger">Sign Out</a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-success">Sign In</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
