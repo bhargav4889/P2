@@ -31,6 +31,7 @@ namespace WebApplication2.Services
                 }
 
                 var normalizedEmail = model.Email.Trim().ToLower();
+                var normalizedName = model.FullName.Trim().ToLower();
 
                 // Check if email already registered via EF Core
                 var emailExists = await _context.Users
@@ -42,6 +43,19 @@ namespace WebApplication2.Services
                     {
                         Success = false,
                         Message = "An account with this email already exists."
+                    };
+                }
+
+                // Check if full name/username already taken
+                var nameExists = await _context.Users
+                    .AnyAsync(u => u.FullName.ToLower() == normalizedName);
+
+                if (nameExists)
+                {
+                    return new DbResponse
+                    {
+                        Success = false,
+                        Message = "An account with this name already exists. Please choose a different name."
                     };
                 }
 
@@ -89,19 +103,19 @@ namespace WebApplication2.Services
                     };
                 }
 
-                var normalizedEmail = model.Email.Trim().ToLower();
+                var identifier = model.UsernameOrEmail.Trim().ToLower();
 
-                // Retrieve user via EF Core
+                // Retrieve user via EF Core by either Email OR FullName
                 var user = await _context.Users
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedEmail);
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == identifier || u.FullName.ToLower() == identifier);
 
                 if (user == null)
                 {
                     return new DbResponse
                     {
                         Success = false,
-                        Message = "Invalid email or password."
+                        Message = "Invalid username/email or password."
                     };
                 }
 
@@ -112,7 +126,7 @@ namespace WebApplication2.Services
                     return new DbResponse
                     {
                         Success = false,
-                        Message = "Invalid email or password."
+                        Message = "Invalid username/email or password."
                     };
                 }
 
